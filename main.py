@@ -4,6 +4,7 @@ import torch
 import sqlite3
 import os
 
+
 def convert(liste:torch.Tensor|str, tokenizer = None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if type(liste) == str:
@@ -19,7 +20,7 @@ def convert(liste:torch.Tensor|str, tokenizer = None):
     z_mean = z_score.mean()
     z_max = z_score.max()
     newtensor = torch.tensor([z_min, z_mean, z_max], dtype=torch.float64).to(device)
-    return newtensor
+    return newtensor.tolist()
 
 def save_to_db(liste:list, dbname:str = "list_data.db", table_name:str = "qa_table"):
     with sqlite3.connect(dbname) as conn:
@@ -61,21 +62,13 @@ def main():
 
 
 
-    messages = [
-        {"role": "system", "content": "Karşındaki kişiye arkadaşlık eden bir arkadaşsın."},
-        {"role": "system", "content": "Adın Cuma."},
-        {"role": "user", "content": question},
-    ]
+    # messages = [{"role": "system", "content": "Karşındaki kişiye arkadaşlık eden bir arkadaşsın."},{"role": "system", "content": "Adın Cuma."},{"role": "user", "content": question}]
 
-    text = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True
-    )
+    # text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
-    model_inputs = tokenizer([text], return_tensors="pt")
+    # model_inputs = tokenizer([text], return_tensors="pt")
 
-    print(convert(messages[-1]["content"], tokenizer=tokenizer))
+    print(convert(question, tokenizer=tokenizer))
     # print(convert(question))
 
     # generated_ids = model.generate(**model_inputs, max_new_tokens=512)
